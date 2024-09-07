@@ -37,3 +37,4 @@ export const avatarImages = [
 
 
 export const COUNTRIES_API = "https://restcountries.com/v3.1/all";
+export const API_URL = "https://video-chat-api-ok7c.onrender.com";

@@ -8,7 +8,7 @@ import {
   useCallStateHooks
 } from '@stream-io/video-react-sdk';
 import { LayoutList, Users } from 'lucide-react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import { useState } from 'react';
 
 import { cn } from '@/lib/utils';
@@ -21,11 +21,15 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from './ui/dropdown-menu';
+import Modal from './Modal';
+import Chat from './Chat';
 
 type CallLayoutType = 'grid' | 'speaker-left' | 'speaker-right';
 
 const MeetingRoom = () => {
   const searchParams = useSearchParams();
+  const params = useParams()
+  const roomID = params?.id
   const isPersonalRoom = !!searchParams.get('personal');
   const router = useRouter();
   const [layout, setLayout] = useState<CallLayoutType>('speaker-left');
@@ -92,6 +96,8 @@ const MeetingRoom = () => {
             <Users size={20} className="text-white" />
           </div>
         </button>
+        <Modal />
+        <Chat roomId={roomID as string} />
         {!isPersonalRoom && <EndCallButton />}
       </div>
     </section>

@@ -1,12 +1,13 @@
 /* eslint-disable camelcase */
-import { ReactNode } from "react";
+import { ClerkProvider } from '@clerk/nextjs';
 import type { Metadata } from "next";
-import { ClerkProvider } from "@clerk/nextjs";
+import { ReactNode } from "react";
 
+import { Toaster } from "@/components/ui/toaster";
+import { SocketProvider } from "@/providers/SocketProvider";
 import "@stream-io/video-react-sdk/dist/css/styles.css";
 import "react-datepicker/dist/react-datepicker.css";
 import "./globals.css";
-import { Toaster } from "@/components/ui/toaster";
 
 
 
@@ -37,10 +38,21 @@ export default function RootLayout({
           },
         }}
       >
-        <body className={` bg-dark-2`}>
-          <Toaster />
-          {children}
-        </body>
+
+        <SocketProvider>
+          <body className={` bg-dark-2`}>
+            <header>
+              {/* <SignedOut>
+              <SignInButton />
+            </SignedOut> */}
+              {/* <SignedIn>
+              <UserButton />
+            </SignedIn> */}
+            </header>
+            <Toaster />
+            {children}
+          </body>
+        </SocketProvider>
       </ClerkProvider>
     </html>
   );
