@@ -1,5 +1,4 @@
-import { ref, uploadBytes } from "@firebase/storage";
-import { getDownloadURL } from "firebase/storage";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { ChangeEvent, useState } from "react";
 import { Button } from "./ui/button";
 import {
@@ -19,17 +18,20 @@ import { useParams } from "next/navigation";
 import { useSocket } from "@/providers/SocketProvider";
 import { storage } from "@/lib/firebase";
 
-const FileUpload = () => {
+const FileUpload = ({ sender }: any) => {
     const [uploading, setUploading] = useState(false);
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
-    const [isDialogOpen, setIsDialogOpen] = useState(false); // State to control dialog visibility
-    const { roomId } = useParams<{ roomId: string }>();
+    const [isDialogOpen, setIsDialogOpen] = useState(false);
+    const params = useParams();
+    const roomId = params.id;
     const socket: any = useSocket();
 
     const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
-        if (file) {
+        if (file && file.size <= 50 * 1024 * 1024) { // 50MB limit
             setSelectedFile(file);
+        } else {
+            console.error("File is too large. Please upload files below 50MB.");
         }
     };
 
@@ -37,19 +39,21 @@ const FileUpload = () => {
         if (!selectedFile || !roomId) return;
 
         setUploading(true);
-        const storageRef = ref(storage, `uploads/${roomId}/${selectedFile.name}`);
+        const sanitizedFileName = selectedFile.name.replace(/\s+/g, '_');
+        const storageRef = ref(storage, `uploads/${roomId}/${sanitizedFileName}`);
         try {
             const snapshot = await uploadBytes(storageRef, selectedFile);
             const fileURL = await getDownloadURL(snapshot.ref);
 
-            sendFileMessage(selectedFile.name, fileURL);
+            console.log("File uploaded successfully, URL:", fileURL);
+            sendFileMessage(sanitizedFileName, fileURL);
 
             setUploading(false);
             setSelectedFile(null);
-            setIsDialogOpen(false); // Close the dialog after successful upload
+            setIsDialogOpen(false);
         } catch (error) {
-            setSelectedFile(null);
             console.error("Error uploading file:", error);
+            setSelectedFile(null);
             setUploading(false);
         }
     };
@@ -59,6 +63,7 @@ const FileUpload = () => {
             roomId,
             msg: `File: ${fileName}`,
             fileURL,
+            sender
         });
     };
 
@@ -69,7 +74,7 @@ const FileUpload = () => {
                     <div
                         className="bg-transparent lg:hover:bg-blue-500 rounded-lg p-2 cursor-pointer"
                         title="upload-file"
-                        onClick={() => setIsDialogOpen(true)} // Open the dialog when clicked
+                        onClick={() => setIsDialogOpen(true)}
                     >
                         <Upload width={15} />
                     </div>
@@ -77,9 +82,7 @@ const FileUpload = () => {
                 <DialogContent className="sm:max-w-[425px]">
                     <DialogHeader>
                         <DialogTitle>Upload File</DialogTitle>
-                        <DialogDescription>
-                            Please upload files below 50MB.
-                        </DialogDescription>
+                        <DialogDescription>Please upload files below 50MB.</DialogDescription>
                     </DialogHeader>
                     <div className="grid w-full items-center gap-1.5">
                         <Label htmlFor="file-upload">Select File</Label>
@@ -87,11 +90,10 @@ const FileUpload = () => {
                             id="file-upload"
                             type="file"
                             onChange={handleFileChange}
-
                         />
                     </div>
                     <DialogFooter className="sm:justify-start">
-                        <div className="flex flex-col lg:flex-row">
+                        <div className="flex flex-col lg:flex-row gap-x-5">
                             <Button
                                 onClick={handleUpload}
                                 disabled={!selectedFile || uploading}
@@ -112,7 +114,7 @@ const FileUpload = () => {
                     </DialogFooter>
                 </DialogContent>
             </Dialog>
-        </div >
+        </div>
     );
 };
 

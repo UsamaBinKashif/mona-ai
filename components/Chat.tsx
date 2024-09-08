@@ -34,7 +34,7 @@ const Chat = ({ roomId, setChatBox }: Props) => {
 
 
 
-  const currentUser = user
+  const currentUser = user?.fullName
   const socket: any = useSocket();
   const [msg, setMsg] = useState<Message[]>([]);
   const [audioMsgs, setAudioMsgs] = useState<AudioMessage[]>([]);
@@ -71,12 +71,14 @@ const Chat = ({ roomId, setChatBox }: Props) => {
       try {
         const response = await axios.get(`${API_URL}/api/messages/${roomId}`);
         const data = response.data;
+        // console.log(data)
         setMsg(data.messages.reverse()); // Reverse messages to show latest first
         setAudioMsgs(data.audioMessages.reverse()); // Reverse audio messages
       } catch (error) {
         console.error("Error fetching messages:", error);
       }
     };
+
 
     fetchMessages();
   }, [roomId, msg]);
@@ -101,7 +103,7 @@ const Chat = ({ roomId, setChatBox }: Props) => {
     }
 
     if (msg && user) {
-      socket.emit("BE-send-message", { roomId, msg, sender: user.firstName }); // Use the user's first name
+      socket.emit("BE-send-message", { roomId, msg, sender: currentUser }); // Use the user's first name
       if (inputRef.current) {
         inputRef.current.value = "";
       }
@@ -130,13 +132,31 @@ const Chat = ({ roomId, setChatBox }: Props) => {
     try {
       toast({
         title: "Sending Audio",
-      })
+      });
 
+      // Stop recording and get the blob (assuming the blob format is webm)
       const { blob } = await recorder?.current?.stop();
-      const audioFile = new File([blob], "recording.wav", { type: "audio/wav" });
+
+      // Ensure the blob is valid before proceeding
+      if (!blob) {
+        console.error("No audio data available.");
+        return;
+      }
+
+      // Convert the blob into a file (adjust the format if necessary)
+      const audioFile = new File([blob], "recording.webm", { type: "audio/webm" });
+
+      // Convert the file to ArrayBuffer to be sent via socket
       const arrayBuffer = await audioFile.arrayBuffer();
 
-      socket.emit("BE-send-audio", { roomId, audioBlob: arrayBuffer, sender: currentUser });
+      // Emit the audio data to the backend
+      socket.emit("BE-send-audio", {
+        roomId,
+        audioBlob: arrayBuffer,  // ArrayBuffer of the recorded audio
+        sender: currentUser,     // Name of the sender (e.g., user's name)
+      });
+
+      // Set recording state back to false after completion
       setIsRecording(false);
     } catch (error) {
       console.error("An error occurred during stop recording:", error);
@@ -215,7 +235,7 @@ const Chat = ({ roomId, setChatBox }: Props) => {
   if (!isSignedIn) {
     return <p>Please sign in to continue.</p>; // Handle the case when the user is not signed in
   }
-  
+
   return (
     <>
       <button
@@ -305,28 +325,30 @@ const Chat = ({ roomId, setChatBox }: Props) => {
             </div>
           </div>
           <div className="flex gap-2 absolute bottom-0 lg:bottom-4 items-center">
-            <div className="flex border-2 border-secondary-upperground items-center bg-transparent rounded-xl w-full lg:w-64">
+            <div className="flex border-2 border-secondary-upperground items-center bg-transparent rounded-xl">
               <Input
                 type="text"
                 name="text"
-                className="text-[#9D9FA5] bg-[#1A2131] rounded-xl  border-none outline-none"
+              
+
+                className="text-[#9D9FA5] bg-[#1A2131] rounded-xl "
                 ref={inputRef}
                 onKeyDown={sendMessage}
                 placeholder="Enter your message"
               />
+            </div>
               <div
                 onMouseDown={toggleRecording}
                 title="record-audio"
                 className={
                   isRecording
-                    ? " animate-pulse p-2 bg-green-500 r hover:bg-green-400"
-                    : "bg-transparent p-2 cursor-pointer  hover:bg-green-400"
+                    ? " animate-pulse p-2 bg-green-500  hover:bg-green-400"
+                    : "bg-transparent p-2 cursor-pointer rounded-lg   hover:bg-green-400"
                 }
               >
                 <Mic width={15} />
               </div>
-              <FileUpload />
-            </div>
+              <FileUpload sender={currentUser} />
             <button
               title="send-text"
               onClick={sendMessage}

@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { Input } from "./ui/input";
-import {  MessageCircleX, SendHorizontal } from "lucide-react";
+import { MessageCircleX, SendHorizontal } from "lucide-react";
 import axios from "axios";
 import { API_URL } from "@/constants";
+
 
 
 interface Response {
@@ -13,9 +14,11 @@ export default function Modal({ roomId }: any) {
     const [showModal, setShowModal] = useState(false);
     const [question, setQuestion] = useState<string>("");  // State for the user's question
     const [responses, setResponses] = useState<Response[]>([]);  // State for storing all responses
+    const [loading, setLoading] = useState(false);  // State for loading indicator
 
     const askQuestion = async () => {
         if (!question.trim()) return;  // Prevent empty questions from being sent
+        setLoading(true);
 
         try {
             console.log("Sending question to server:", question);
@@ -39,6 +42,8 @@ export default function Modal({ roomId }: any) {
                 ...prevResponses,
                 { question, answer: "Failed to get a response from AI." },
             ]);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -54,7 +59,7 @@ export default function Modal({ roomId }: any) {
             </button>
             {showModal ? (
                 <>
-                    <div className="fixed inset-0  w-screen lg:w-[400px] h-full  2xl:h-[95%] bg-[#000D2D]  p-5">
+                    <div className="fixed inset-0  w-screen lg:w-[400px] h-full  2xl:h-[95%] bg-[#000D2D]  p-5 text-[14px]">
                         <div className="relative ">
                             <header className="">
                                 <svg width="250" height="68" viewBox="0 0 379 68" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -74,13 +79,12 @@ export default function Modal({ roomId }: any) {
 
                             </header>
                             <div className="my-5 relative flex justify-center flex-col ">
-                                <div className="h-[600px] lg:h-[450px]  overflow-y-scroll scrollbar-hide ">
-                                    <div className="text-white ">
-
+                                <div className="h-[600px] lg:h-[450px]  overflow-y-scroll scrollbar-hide">
+                                    <div className="text-white">
                                         {responses.map((res, index) => (
                                             <div key={index} className="p-3 mb-4 flex gap-2 flex-col">
                                                 <p className="font-bold bg-[#252D40] p-2 rounded-xl self-end">Q: {res.question}</p>
-                                                <p className="bg-[#252D40] p-2 rounded-xl ">A: {res.answer}</p>
+                                                <p className="bg-[#252D40] p-2 rounded-xl ">Ai: {res.answer}</p>
                                             </div>
                                         ))}
                                     </div>
@@ -97,18 +101,20 @@ export default function Modal({ roomId }: any) {
                                     <button
                                         title="send-text"
                                         onClick={askQuestion}
-                                        className="bg-secondary-upperground hover:bg-secondary-upperground/50 w-[60px] flex items-center justify-center h-[40px] rounded-lg"
+                                        disabled={loading}
+                                        className={`bg-secondary-upperground hover:bg-secondary-upperground/50 w-[60px] flex items-center justify-center h-[40px] rounded-lg ${loading && "animate-pulse"}`}
 
                                     >
                                         <SendHorizontal color="white" />
                                     </button>
+
                                     <button
                                         className="bg-red-500 hover:bg-red-500/50 w-[60px] flex items-center justify-center h-[40px] rounded-lg"
 
                                         type="button"
                                         onClick={() => setShowModal(false)}
                                     >
-                                        <MessageCircleX  color="white"/>
+                                        <MessageCircleX color="white" />
                                     </button>
                                 </div>
                             </div>
