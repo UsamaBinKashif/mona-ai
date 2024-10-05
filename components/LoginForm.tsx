@@ -5,7 +5,7 @@ import { auth } from '@/lib/firebase';
 import {
   GoogleAuthProvider,
   signInAnonymously,
-  signInWithRedirect
+  signInWithPopup,
 } from 'firebase/auth';
 import Spinner from './Spinner';
 
@@ -39,7 +39,7 @@ const LoginForm = () => {
       const googleAuthProvider = new GoogleAuthProvider();
 
       // 3) Try to sign in with popup
-      await signInWithRedirect(auth, googleAuthProvider);
+      await signInWithPopup(auth, googleAuthProvider);
 
       // 4) Disable loading
       setIsLoadingGoogle(false);
