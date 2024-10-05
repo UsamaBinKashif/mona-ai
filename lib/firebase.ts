@@ -7,7 +7,7 @@ import { getAuth } from 'firebase/auth';
 // Your web app's Firebase configuration
 const firebaseConfig = {
   apiKey: 'AIzaSyAlwZ0bjR8Alvxd-S_bFKutbgrIGikAoCA',
-  authDomain: 'https://mona-ai.vercel.app',
+  authDomain: "fir-nodejs-f6cec.firebaseapp.com",
   databaseURL: 'https://fir-nodejs-f6cec-default-rtdb.firebaseio.com',
   projectId: 'fir-nodejs-f6cec',
   storageBucket: 'fir-nodejs-f6cec.appspot.com',
