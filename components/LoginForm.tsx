@@ -5,7 +5,7 @@ import { auth } from '@/lib/firebase';
 import {
   GoogleAuthProvider,
   signInAnonymously,
-  signInWithPopup,
+  signInWithRedirect
 } from 'firebase/auth';
 import Spinner from './Spinner';
 
@@ -39,7 +39,7 @@ const LoginForm = () => {
       const googleAuthProvider = new GoogleAuthProvider();
 
       // 3) Try to sign in with popup
-      await signInWithPopup(auth, googleAuthProvider);
+      await signInWithRedirect(auth, googleAuthProvider);
 
       // 4) Disable loading
       setIsLoadingGoogle(false);
@@ -67,7 +67,6 @@ const LoginForm = () => {
   return (
     <div className="absolute left-0 right-0 top-0 bottom-0">
       <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2  text-center p-8 flex-col gap-16 rounded-lg flex-col">
-       
         <button
           disabled={isLoadingGoogle}
           onClick={handleGoogleSignIn}
