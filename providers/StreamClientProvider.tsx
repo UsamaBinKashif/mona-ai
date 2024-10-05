@@ -1,37 +1,95 @@
 'use client';
 
-import { ReactNode, useEffect, useState } from 'react';
+import { ReactNode, useContext, useEffect, useState } from 'react';
+import { useParams } from 'next/navigation';
 import { StreamVideoClient, StreamVideo } from '@stream-io/video-react-sdk';
-import { useUser } from '@clerk/nextjs';
 
-import { tokenProvider } from '@/actions/stream.actions';
+// Firebase
+import { signInAnonymously } from 'firebase/auth';
+import { auth } from '@/lib/firebase';
+
+// Components
+import LoginForm from '@/components/LoginForm';
 import Loader from '@/components/Loader';
 
+// Actions
+import { tokenProvider } from '@/actions/stream.actions';
+import authContext from '@/auth/AuthContext';
+
+// API KEY
 const API_KEY = process.env.NEXT_PUBLIC_STREAM_API_KEY;
 
+/*
+ ** ** ===========================================================================================
+ ** ** ** Function [StreamVideoProvider]
+ ** ** ===========================================================================================
+ */
 const StreamVideoProvider = ({ children }: { children: ReactNode }) => {
+  /*
+   ** **
+   ** ** ** State
+   ** **
+   */
   const [videoClient, setVideoClient] = useState<StreamVideoClient>();
-  const { user, isLoaded } = useUser();
+  const { id } = useParams();
+  const { user, isUserLoggedIn, isLoading } = useContext(authContext);
+  const [isLoadingSignInAnonymous, setIsLoadingSignInAnonymous] =
+    useState(false);
 
+  /*
+   ** **
+   ** ** ** Effects
+   ** **
+   */
+  // Sign in user anonymously if the meeting id is present in url
   useEffect(() => {
-    if (!isLoaded || !user) return;
+    (async () => {
+      // 1) Validate
+      if (!id || isLoading || isUserLoggedIn) return;
+
+      // 2) Signin user anonymously
+      setIsLoadingSignInAnonymous(true);
+      await signInAnonymously(auth);
+      setIsLoadingSignInAnonymous(false);
+    })();
+  }, [id, isLoading, isUserLoggedIn]);
+
+  // Init video client
+  useEffect(() => {
+    // 1) Validate
+    if (!isUserLoggedIn) return;
     if (!API_KEY) throw new Error('Stream API key is missing');
 
+    // 2) Create brand new token by passing userid to server action
+    const tokenProviderRes = () =>
+      tokenProvider(user.id)
+        .then((token) => token)
+        .catch(() => 'error');
+
+    // 3) Return if failed to create token
+    if (!tokenProviderRes) return;
+
+    // 4) Init stream video client
     const client = new StreamVideoClient({
       apiKey: API_KEY,
       user: {
-        id: user?.id,
-        name: user?.username || user?.id,
-        image: user?.imageUrl,
+        id: user.id,
+        name: user.name || user.id,
+        image: user.photo,
       },
-      tokenProvider,
+      tokenProvider: tokenProviderRes,
     });
 
     setVideoClient(client);
-  }, [user, isLoaded]);
+  }, [user, isUserLoggedIn, isLoading]);
 
-  if (!videoClient) return <Loader />;
+  // if loading, show loader
+  if (isLoading || isLoadingSignInAnonymous) return <Loader />;
 
+  //  If failed to init, show login form
+  if (!videoClient) return <LoginForm />;
+
+  // Everything okay, show video stream
   return <StreamVideo client={videoClient}>{children}</StreamVideo>;
 };
 

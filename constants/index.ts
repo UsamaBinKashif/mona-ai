@@ -35,8 +35,7 @@ export const avatarImages = [
   '/images/avatar-5.png',
 ];
 
-
-export const COUNTRIES_API = "https://restcountries.com/v3.1/all";
+export const COUNTRIES_API = 'https://restcountries.com/v3.1/all';
 // export const API_URL = "https://video-chat-api-ok7c.onrender.com";
-// export const API_URL = "http://localhost:8000";
 export const API_URL = "https://testing.devthrone.com";
+// export const API_URL = 'http://localhost:8000';

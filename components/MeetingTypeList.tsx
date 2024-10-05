@@ -2,16 +2,17 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { generateMeetingLink } from '@/lib/helper';
-import { useUser } from '@clerk/nextjs';
 import { useStreamVideoClient } from '@stream-io/video-react-sdk';
 import HomeCard from './HomeCard';
 import Loader from './Loader';
 import MeetingModal from './MeetingModal';
 import { Input } from './ui/input';
 import { useToast } from './ui/use-toast';
+import { onAuthStateChanged, User } from 'firebase/auth';
+import { auth } from '@/lib/firebase';
 
 const initialValues = {
   dateTime: new Date(),
@@ -26,8 +27,20 @@ const MeetingTypeList = () => {
   >(undefined);
   const [values, setValues] = useState(initialValues);
   const client = useStreamVideoClient();
-  const { user } = useUser();
   const { toast } = useToast();
+
+  const [user, setUser] = useState<User | undefined>();
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setUser(user);
+      }
+    });
+
+    // Clean up the subscription
+    return () => unsubscribe();
+  }, []);
 
   const createMeeting = async () => {
     if (!client || !user) return;
@@ -64,7 +77,6 @@ const MeetingTypeList = () => {
 
   if (!client || !user) return <Loader />;
 
-
   return (
     <section className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-4">
       <HomeCard
@@ -77,12 +89,9 @@ const MeetingTypeList = () => {
         img="/icons/join-meeting.svg"
         title="Join Meeting"
         description="via invitation link"
-        className="bg-tranparent border-2 border-[#5BC2AC]"
+        className="border-2 border-[#5BC2AC] bg-transparent"
         handleClick={() => setMeetingState('isJoiningMeeting')}
       />
-
-
-
 
       <MeetingModal
         isOpen={meetingState === 'isJoiningMeeting'}

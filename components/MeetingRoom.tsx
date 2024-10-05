@@ -5,7 +5,7 @@ import {
   CallingState,
   PaginatedGridLayout,
   SpeakerLayout,
-  useCallStateHooks
+  useCallStateHooks,
 } from '@stream-io/video-react-sdk';
 import { LayoutList, Users } from 'lucide-react';
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
@@ -28,8 +28,8 @@ type CallLayoutType = 'grid' | 'speaker-left' | 'speaker-right';
 
 const MeetingRoom = () => {
   const searchParams = useSearchParams();
-  const params = useParams()
-  const roomID = params?.id
+  const params = useParams();
+  const roomID = params?.id;
   const isPersonalRoom = !!searchParams.get('personal');
   const router = useRouter();
   const [layout, setLayout] = useState<CallLayoutType>('speaker-left');
@@ -92,7 +92,7 @@ const MeetingRoom = () => {
           </DropdownMenuContent>
         </DropdownMenu>
         <button onClick={() => setShowParticipants((prev) => !prev)}>
-          <div className=" cursor-pointer rounded-2xl bg-[#19232d] px-4 py-2 hover:bg-[#4c535b]  ">
+          <div className="cursor-pointer rounded-2xl bg-[#19232d] px-4 py-2 hover:bg-[#4c535b]  ">
             <Users size={20} className="text-white" />
           </div>
         </button>

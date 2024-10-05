@@ -1,17 +1,17 @@
-import { useEffect, useState } from 'react';
-import { useUser } from '@clerk/nextjs';
+import { useContext, useEffect, useState } from 'react';
 import { Call, useStreamVideoClient } from '@stream-io/video-react-sdk';
+import authContext from '@/auth/AuthContext';
 
 export const useGetCalls = () => {
-  const { user } = useUser();
+  const { user, isUserLoggedIn } = useContext(authContext);
   const client = useStreamVideoClient();
   const [calls, setCalls] = useState<Call[]>();
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const loadCalls = async () => {
-      if (!client || !user?.id) return;
-      
+      if (!client || isUserLoggedIn) return;
+
       setIsLoading(true);
 
       try {
@@ -36,17 +36,17 @@ export const useGetCalls = () => {
     };
 
     loadCalls();
-  }, [client, user?.id]);
+  }, [client, isUserLoggedIn, user]);
 
   const now = new Date();
 
   const endedCalls = calls?.filter(({ state: { startsAt, endedAt } }: Call) => {
-    return (startsAt && new Date(startsAt) < now) || !!endedAt
-  })
+    return (startsAt && new Date(startsAt) < now) || !!endedAt;
+  });
 
   const upcomingCalls = calls?.filter(({ state: { startsAt } }: Call) => {
-    return startsAt && new Date(startsAt) > now
-  })
+    return startsAt && new Date(startsAt) > now;
+  });
 
-  return { endedCalls, upcomingCalls, callRecordings: calls, isLoading }
+  return { endedCalls, upcomingCalls, callRecordings: calls, isLoading };
 };

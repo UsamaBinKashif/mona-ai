@@ -1,21 +1,19 @@
-/* eslint-disable camelcase */
-import { ClerkProvider } from '@clerk/nextjs';
-import type { Metadata } from "next";
-import { ReactNode } from "react";
+import { ReactNode } from 'react';
+import type { Metadata } from 'next';
 
-import { Toaster } from "@/components/ui/toaster";
-import { SocketProvider } from "@/providers/SocketProvider";
-import "@stream-io/video-react-sdk/dist/css/styles.css";
-import "react-datepicker/dist/react-datepicker.css";
-import "./globals.css";
+import AuthProvider from '@/auth/AuthProvider';
+import { Toaster } from '@/components/ui/toaster';
+import { SocketProvider } from '@/providers/SocketProvider';
 
-
+import './globals.css';
+import 'react-datepicker/dist/react-datepicker.css';
+import '@stream-io/video-react-sdk/dist/css/styles.css';
 
 export const metadata: Metadata = {
-  title: "MONA AI",
-  description: "Video calling App",
+  title: 'MONA AI',
+  description: 'Video calling App',
   icons: {
-    icon: "/icons/logo.svg",
+    icon: '/icons/logo.svg',
   },
 };
 
@@ -24,22 +22,8 @@ export default function RootLayout({
 }: Readonly<{ children: ReactNode }>) {
   return (
     <html lang="en">
-      <ClerkProvider
-        appearance={{
-          layout: {
-            socialButtonsVariant: "iconButton",
-          },
-          variables: {
-            colorText: "#fff",
-            colorPrimary: "#0E78F9",
-            colorBackground: "#1C1F2E",
-            colorInputBackground: "#252A41",
-            colorInputText: "#fff",
-          },
-        }}
-      >
-
-        <SocketProvider>
+      <SocketProvider>
+        <AuthProvider>
           <body className={` bg-dark-2`}>
             <header>
               {/* <SignedOut>
@@ -52,8 +36,8 @@ export default function RootLayout({
             <Toaster />
             {children}
           </body>
-        </SocketProvider>
-      </ClerkProvider>
+        </AuthProvider>
+      </SocketProvider>
     </html>
   );
 }
