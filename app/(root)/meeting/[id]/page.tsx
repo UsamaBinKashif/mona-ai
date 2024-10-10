@@ -1,7 +1,7 @@
 'use client';
 
 // React / Next
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 
 // Third party libs
@@ -18,6 +18,7 @@ import MeetingRoom from '@/components/MeetingRoom';
 // Hooks
 import { useGetCallById } from '@/hooks/useGetCallById';
 import authContext from '@/auth/AuthContext';
+import { getCountries } from '@/lib/helper';
 
 /*
  ** ** ===============================================================================
@@ -32,7 +33,18 @@ const MeetingPage = () => {
    */
   const { user, isUserLoggedIn, isLoading } = useContext(authContext);
   const [isSetupComplete, setIsSetupComplete] = useState(false);
+  const [countries, setCountries] = useState<
+    { flag: string; languages: string[] }[]
+  >([]);
 
+
+  useEffect(() => {
+    const fetchCountries = async () => {
+      const countryData = await getCountries();
+      setCountries(countryData);
+    };
+    fetchCountries();
+  }, []);
   const { id } = useParams();
   const { call, isCallLoading } = useGetCallById(id);
 
@@ -52,12 +64,14 @@ const MeetingPage = () => {
   if (notAllowed)
     return <Alert title="You are not allowed to join this meeting" />;
 
+
+
   return (
     <main className="h-screen w-full">
       <StreamCall call={call}>
         <StreamTheme>
           {!isSetupComplete ? (
-            <MeetingSetup setIsSetupComplete={setIsSetupComplete} />
+            <MeetingSetup setIsSetupComplete={setIsSetupComplete} countries={countries} setCountries={setCountries} />
           ) : (
             <MeetingRoom />
           )}

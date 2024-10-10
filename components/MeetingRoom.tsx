@@ -1,19 +1,19 @@
 'use client';
 import {
   CallControls,
-  CallParticipantsList,
   CallingState,
   PaginatedGridLayout,
   SpeakerLayout,
-  useCallStateHooks,
+  useCallStateHooks
 } from '@stream-io/video-react-sdk';
-import { LayoutList, Users } from 'lucide-react';
+import { LayoutList } from 'lucide-react';
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import { useState } from 'react';
 
-import { cn } from '@/lib/utils';
+import Chat from './Chat';
 import EndCallButton from './EndCallButton';
 import Loader from './Loader';
+import Modal from './Modal';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -21,8 +21,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from './ui/dropdown-menu';
-import Modal from './Modal';
-import Chat from './Chat';
 
 type CallLayoutType = 'grid' | 'speaker-left' | 'speaker-right';
 
@@ -33,7 +31,6 @@ const MeetingRoom = () => {
   const isPersonalRoom = !!searchParams.get('personal');
   const router = useRouter();
   const [layout, setLayout] = useState<CallLayoutType>('speaker-left');
-  const [showParticipants, setShowParticipants] = useState(false);
   const { useCallCallingState } = useCallStateHooks();
 
   // for more detail about types of CallingState see: https://getstream.io/video/docs/react/ui-cookbook/ringing-call/#incoming-call-panel
@@ -58,13 +55,7 @@ const MeetingRoom = () => {
         <div className=" flex size-full max-w-[1000px] items-center">
           <CallLayout />
         </div>
-        <div
-          className={cn('h-[calc(100vh-86px)] hidden ml-2', {
-            'show-block': showParticipants,
-          })}
-        >
-          <CallParticipantsList onClose={() => setShowParticipants(false)} />
-        </div>
+       
       </div>
       {/* video layout and call controls */}
       <div className="fixed bottom-0 flex w-full items-center justify-center gap-5">
@@ -91,11 +82,7 @@ const MeetingRoom = () => {
             ))}
           </DropdownMenuContent>
         </DropdownMenu>
-        <button onClick={() => setShowParticipants((prev) => !prev)}>
-          <div className="cursor-pointer rounded-2xl bg-[#19232d] px-4 py-2 hover:bg-[#4c535b]  ">
-            <Users size={20} className="text-white" />
-          </div>
-        </button>
+        
         <Modal />
         <Chat roomId={roomID as string} />
         {!isPersonalRoom && <EndCallButton />}

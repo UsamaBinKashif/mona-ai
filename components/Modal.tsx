@@ -3,6 +3,7 @@ import { Input } from "./ui/input";
 import { MessageCircleX, SendHorizontal } from "lucide-react";
 import axios from "axios";
 import { API_URL } from "@/constants";
+import { useParams } from "next/navigation";
 
 
 
@@ -15,7 +16,7 @@ export default function Modal({ roomId }: any) {
     const [question, setQuestion] = useState<string>("");  // State for the user's question
     const [responses, setResponses] = useState<Response[]>([]);  // State for storing all responses
     const [loading, setLoading] = useState(false);  // State for loading indicator
-
+    const { id } = useParams()
     const askQuestion = async () => {
         if (!question.trim()) return;  // Prevent empty questions from being sent
         setLoading(true);
@@ -23,8 +24,9 @@ export default function Modal({ roomId }: any) {
         try {
             console.log("Sending question to server:", question);
 
-            const res = await axios.post(`${API_URL}/api/translate/${roomId}`, {
+            const res = await axios.post(`${API_URL}/api/translate/${id}`, {
                 question,
+                roomId: id
             });
 
             console.log("Received response from server:", res.data);

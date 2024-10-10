@@ -7,7 +7,7 @@ import {
 } from '@stream-io/video-react-sdk';
 import { useContext, useEffect, useState } from 'react';
 
-import { getCountries } from '@/lib/helper';
+import authContext from '@/auth/AuthContext';
 import Alert from './Alert';
 import { Button } from './ui/button';
 import {
@@ -19,13 +19,24 @@ import {
   SelectTrigger,
   SelectValue,
 } from './ui/select';
-import authContext from '@/auth/AuthContext';
+
+
+interface Country {
+  flag: string;
+  languages: string[];
+}
+
+interface MeetingSetupProps {
+  setIsSetupComplete: (value: boolean) => void;
+  countries: Country[];
+  setCountries: (value: Country[]) => void;
+}
 
 const MeetingSetup = ({
   setIsSetupComplete,
-}: {
-  setIsSetupComplete: (value: boolean) => void;
-}) => {
+  countries,
+  setCountries,
+}: MeetingSetupProps) => {
   const { user, isUserLoggedIn } = useContext(authContext);
   const [displayName, setDisplayName] = useState('');
 
@@ -35,18 +46,9 @@ const MeetingSetup = ({
   const callTimeNotArrived =
     callStartsAt && new Date(callStartsAt) > new Date();
   const callHasEnded = !!callEndedAt;
-  const [countries, setCountries] = useState<
-    { flag: string; languages: string[] }[]
-  >([]);
+
   const [language, setLanguage] = useState<string>(''); // Correctly define language state and its setter
 
-  useEffect(() => {
-    const fetchCountries = async () => {
-      const countryData = await getCountries();
-      setCountries(countryData);
-    };
-    fetchCountries();
-  }, []);
 
   useEffect(() => {
     localStorage.setItem('currentUserLanguage', language);
@@ -150,9 +152,9 @@ const MeetingSetup = ({
 
           {isUserLoggedIn === true && user.isAnonymous === true && (
             <input
-              className="text-black"
+              className="text-black text-sm px-2 rounded-lg border"
               type="text"
-              placeholder="Display Name"
+              placeholder="Your Name"
               onChange={(e) => handleInputChange(e.target.value)}
             />
           )}
