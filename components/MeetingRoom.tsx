@@ -8,7 +8,7 @@ import {
 } from '@stream-io/video-react-sdk';
 import { LayoutList } from 'lucide-react';
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
-import { useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 
 import Chat from './Chat';
 import EndCallButton from './EndCallButton';
@@ -21,6 +21,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from './ui/dropdown-menu';
+import authContext from '@/auth/AuthContext';
 
 type CallLayoutType = 'grid' | 'speaker-left' | 'speaker-right';
 
@@ -32,6 +33,24 @@ const MeetingRoom = () => {
   const router = useRouter();
   const [layout, setLayout] = useState<CallLayoutType>('speaker-left');
   const { useCallCallingState } = useCallStateHooks();
+
+  const { user, isUserLoggedIn } = useContext(authContext);
+  const [userDisplayName, setUserDisplayName] = useState('');
+
+  // console.log(user)
+  // console.log(userDisplayName)
+  /*
+   ** **
+   ** ** ** State
+   ** **
+   */
+  useEffect(() => {
+    setUserDisplayName(
+      isUserLoggedIn && !user.isAnonymous
+        ? user.name
+        : localStorage.getItem('display-name') || '',
+    );
+  }, [user, isUserLoggedIn]);
 
   // for more detail about types of CallingState see: https://getstream.io/video/docs/react/ui-cookbook/ringing-call/#incoming-call-panel
   const callingState = useCallCallingState();
@@ -55,7 +74,7 @@ const MeetingRoom = () => {
         <div className=" flex size-full max-w-[1000px] items-center">
           <CallLayout />
         </div>
-       
+
       </div>
       {/* video layout and call controls */}
       <div className="fixed bottom-0 flex w-full items-center justify-center gap-5">
@@ -82,10 +101,13 @@ const MeetingRoom = () => {
             ))}
           </DropdownMenuContent>
         </DropdownMenu>
-        
+
         <Modal />
         <Chat roomId={roomID as string} />
         {!isPersonalRoom && <EndCallButton />}
+        <div className='absolute bottom-20 left-[18%] bg-gray-500 text-black p-2 rounded-lg text-sm'>
+          {userDisplayName}
+        </div>
       </div>
     </section>
   );

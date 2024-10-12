@@ -46,7 +46,7 @@ const EndCallButton = () => {
   return (
     <>
       <div>
-        <div onClick={handleCopy} className='text-[12px] bg-green-500 flex items-center gap-x-2 p-2 mb-2 rounded-lg justify-between cursor-pointer' >
+        <div onClick={handleCopy} className='text-[12px] flex items-center gap-x-2 p-2 mb-2 rounded-lg justify-between cursor-pointer' >
           {params.id}
           {copied && <span className="text-white text-[10px] ml-2">Copied!</span>} <Copy />
         </div>

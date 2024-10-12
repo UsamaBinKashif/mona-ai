@@ -115,3 +115,8 @@
     width: 100%;
   }
 }
+
+
+.str-video__participant-details__name{
+  display: none !important;
+}
