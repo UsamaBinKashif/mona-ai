@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import Select from 'react-select';
+import Select, { SingleValue } from 'react-select';
 import {
   DeviceSettings,
   VideoPreview,
@@ -130,7 +130,7 @@ const MeetingSetup = ({
 
           <Select
             options={countryOptions}
-            onChange={(option: { value: any; }) => setSelectedLanguage(option?.value || '')}
+            onChange={(option: SingleValue<{ value: string }>) => setSelectedLanguage(option?.value || '')}
             className="text-black"
           />
         </div>
