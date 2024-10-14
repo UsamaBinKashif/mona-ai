@@ -1,13 +1,12 @@
-import { ReactNode } from 'react';
 import type { Metadata } from 'next';
+import { ReactNode } from 'react';
 
 import AuthProvider from '@/auth/AuthProvider';
 import { Toaster } from '@/components/ui/toaster';
-import { SocketProvider } from '@/providers/SocketProvider';
 
-import './globals.css';
-import 'react-datepicker/dist/react-datepicker.css';
 import '@stream-io/video-react-sdk/dist/css/styles.css';
+import 'react-datepicker/dist/react-datepicker.css';
+import './globals.css';
 
 export const metadata: Metadata = {
   title: 'MONA AI',
@@ -22,7 +21,7 @@ export default function RootLayout({
 }: Readonly<{ children: ReactNode }>) {
   return (
     <html lang="en">
-      <SocketProvider>
+      {/* <SocketProvider> */}
         <AuthProvider>
           <body className={` bg-dark-2`}>
             <header>
@@ -37,7 +36,7 @@ export default function RootLayout({
             {children}
           </body>
         </AuthProvider>
-      </SocketProvider>
+      {/* </SocketProvider> */}
     </html>
   );
 }

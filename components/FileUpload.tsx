@@ -15,8 +15,9 @@ import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { Upload } from "lucide-react";
 import { useParams } from "next/navigation";
-import { useSocket } from "@/providers/SocketProvider";
-import { storage } from "@/lib/firebase";
+import axios from "axios"; // Import axios to make HTTP requests
+import { storage } from "@/lib/firebase"; // Import your Firebase storage
+import { API_URL } from "@/constants";
 
 const FileUpload = ({ sender }: any) => {
     const [uploading, setUploading] = useState(false);
@@ -24,8 +25,7 @@ const FileUpload = ({ sender }: any) => {
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const params = useParams();
     const roomId = params.id;
-    const socket: any = useSocket();
-
+    // Handle file selection
     const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (file && file.size <= 50 * 1024 * 1024) { // 50MB limit
@@ -35,18 +35,23 @@ const FileUpload = ({ sender }: any) => {
         }
     };
 
+    // Handle file upload
     const handleUpload = async () => {
         if (!selectedFile || !roomId) return;
 
         setUploading(true);
         const sanitizedFileName = selectedFile.name.replace(/\s+/g, '_');
         const storageRef = ref(storage, `uploads/${roomId}/${sanitizedFileName}`);
+
         try {
+            // Step 1: Upload file to Firebase Storage
             const snapshot = await uploadBytes(storageRef, selectedFile);
             const fileURL = await getDownloadURL(snapshot.ref);
 
             console.log("File uploaded successfully, URL:", fileURL);
-            sendFileMessage(sanitizedFileName, fileURL);
+
+            // Step 2: Send file message to the backend
+            await sendFileMessage(sanitizedFileName, fileURL);
 
             setUploading(false);
             setSelectedFile(null);
@@ -58,13 +63,19 @@ const FileUpload = ({ sender }: any) => {
         }
     };
 
-    const sendFileMessage = (fileName: string, fileURL: string) => {
-        socket.emit("BE-send-message", {
-            roomId,
-            msg: `File: ${fileName}`,
-            fileURL,
-            sender
-        });
+    // Function to send the file message to the backend via HTTP POST
+    const sendFileMessage = async (fileName: string, fileURL: string) => {
+        try {
+            await axios.post(`${API_URL}/api/room/message`, {
+                roomId,
+                msg: `File: ${fileName}`, // Set the message with the file name
+                fileURL, // Send the file URL
+                sender, // Sender's name
+            });
+            console.log("File message sent successfully.");
+        } catch (error) {
+            console.error("Error sending file message:", error);
+        }
     };
 
     return (

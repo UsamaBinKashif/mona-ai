@@ -1,5 +1,6 @@
 "use client"
 import { API_URL } from "@/constants";
+// import { API_URL } from "@/constants";
 import React, { createContext, useMemo, useContext } from "react";
 import { io, Socket } from "socket.io-client";
 
@@ -19,7 +20,6 @@ export const SocketProvider: React.FC<React.PropsWithChildren<object>> = (props)
 
     return (
         <SocketContext.Provider value={{ socket }}>
-            
             {props.children}
         </SocketContext.Provider>
     );

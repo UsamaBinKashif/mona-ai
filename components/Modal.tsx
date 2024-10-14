@@ -61,7 +61,7 @@ export default function Modal({ roomId }: any) {
             </button>
             {showModal ? (
                 <>
-                    <div className="fixed inset-0  w-screen lg:w-[400px] h-full  2xl:h-[95%] bg-[#000D2D]  p-5 text-[14px]">
+                    <div className="fixed inset-0 z-10   w-screen lg:w-[400px] h-full  2xl:h-[95%] bg-[#000D2D]  p-5 text-[14px]">
                         <div className="relative ">
                             <header className="">
                                 <svg width="250" height="68" viewBox="0 0 379 68" fill="none" xmlns="http://www.w3.org/2000/svg">
