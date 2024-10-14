@@ -124,6 +124,9 @@ const Chat = ({ roomId, setChatBox }: Props) => {
 
     if (message && isUserLoggedIn) {
       try {
+        toast({
+          title: 'Sending Message',
+        });
         await axios.post(`${API_URL}/api/room/message`, {
           roomId,
           msg: message,
