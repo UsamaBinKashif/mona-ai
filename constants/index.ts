@@ -37,5 +37,5 @@ export const avatarImages = [
 
 export const COUNTRIES_API = 'https://restcountries.com/v3.1/all';
 // export const API_URL = "https://video-chat-api-ok7c.onrender.com";
-// export const API_URL = "http://mazala.kamrancreation.com";
+// export const API_URL = "http://localhost:8000";
 export const API_URL = 'https://mazala.kamrancreation.com';

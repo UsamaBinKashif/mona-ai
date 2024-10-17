@@ -2,23 +2,23 @@
 
 import { useCall, useCallStateHooks } from '@stream-io/video-react-sdk';
 
-import { Button } from './ui/button';
-import { useParams, useRouter } from 'next/navigation';
 import { Copy } from 'lucide-react';
-import { useState } from 'react';
+import { useParams, useRouter } from 'next/navigation';
+import { Button } from './ui/button';
+import { toast } from './ui/use-toast';
 
 const EndCallButton = () => {
   const call = useCall();
   const router = useRouter();
   const params = useParams()
 
-  const [copied, setCopied] = useState(false);
 
   const handleCopy = () => {
     navigator.clipboard.writeText(window.location.href)
       .then(() => {
-        setCopied(true);
-        setTimeout(() => setCopied(false), 2000); // Reset after 2 seconds
+        toast({
+          title: 'Link Copied',
+        });
       })
       .catch(err => console.error('Failed to copy: ', err));
   };
@@ -45,14 +45,14 @@ const EndCallButton = () => {
 
   return (
     <>
-      <div>
-        <div onClick={handleCopy} className='text-[12px] flex items-center gap-x-2 p-2 mb-2 rounded-lg justify-between cursor-pointer' >
-          {params.id}
-          {copied && <span className="text-white text-[10px] ml-2">Copied!</span>} <Copy />
-        </div>
+      <div className='flex gap-x-3'>
         <Button onClick={endCall} className="bg-red-500">
           End call for everyone
         </Button>
+        <div onClick={handleCopy} className='text-[12px] flex items-center gap-x-2 p-2 mb-2 rounded-lg justify-between cursor-pointer' >
+          {params.id}
+          <Copy />
+        </div>
       </div>
     </>
   );
