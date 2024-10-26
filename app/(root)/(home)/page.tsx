@@ -1,6 +1,6 @@
 'use client';
 
-import { useContext } from 'react';
+import { useContext, useEffect, useState } from 'react';
 
 import { auth } from '../../../lib/firebase';
 import { signOut } from 'firebase/auth';
@@ -24,15 +24,31 @@ const Home = () => {
    */
   const { isUserLoggedIn, isLoading } = useContext(authContext);
 
-  // Time & Date
-  const now = new Date();
-  const time = now.toLocaleTimeString('en-US', {
-    hour: '2-digit',
-    minute: '2-digit',
-  });
-  const date = new Intl.DateTimeFormat('en-US', { dateStyle: 'full' }).format(
-    now,
-  );
+  // State for time and date
+  const [time, setTime] = useState('');
+  const [date, setDate] = useState('');
+
+  useEffect(() => {
+    // Function to update time and date
+    const updateTime = () => {
+      const now = new Date();
+      setTime(
+        now.toLocaleTimeString('en-US', {
+          hour: '2-digit',
+          minute: '2-digit',
+        })
+      );
+      setDate(new Intl.DateTimeFormat('en-US', { dateStyle: 'full' }).format(now));
+    };
+
+    // Update time immediately and set interval to update every second
+    updateTime();
+    const intervalId = setInterval(updateTime, 1000);
+
+    // Cleanup interval on component unmount
+    return () => clearInterval(intervalId);
+  }, []);
+
 
   /*
    ** **

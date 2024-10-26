@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/rules-of-hooks */
+/* eslint-disable no-redeclare */
 import React, { useContext, useEffect, useState } from 'react';
 import Select, { SingleValue } from 'react-select';
 import {
@@ -9,7 +11,10 @@ import {
 import authContext from '@/auth/AuthContext';
 import Alert from './Alert';
 import { Button } from './ui/button';
-
+import { DisplayNameContext } from '@/providers/DisplayNameContext';
+import { database } from '@/lib/firebase';
+import { useParams } from 'next/navigation';
+import { ref, set } from 'firebase/database';
 interface Country {
   flag: string;
   languages: string[];
@@ -26,7 +31,6 @@ const MeetingSetup = ({
   countries,
 }: MeetingSetupProps) => {
   const { user, isUserLoggedIn } = useContext(authContext);
-  const [displayName, setDisplayName] = useState('');
   const [selectedLanguage, setSelectedLanguage] = useState<string | null>(null);
 
   const { useCallEndedAt, useCallStartsAt } = useCallStateHooks();
@@ -37,6 +41,36 @@ const MeetingSetup = ({
   const callHasEnded = !!callEndedAt;
 
   const call = useCall();
+  const { displayName, setDisplayName } = useContext(DisplayNameContext);
+  const [localDisplayName, setLocalDisplayName] = useState(displayName || '');
+  const params = useParams()
+  const handleInputChange = (text: string) => {
+    setLocalDisplayName(text);
+    setDisplayName(text);  // Update the context value
+  };
+
+
+  const saveUserToRealtimeDatabase = async () => {
+    if (params.id && user && localDisplayName) {
+      try {
+        await set(ref(database, `meetings/${params.id}/participants/${user.id}`), {
+          displayName: localDisplayName,
+          userId: user.id,
+        });
+      } catch (error) {
+        console.error("Error saving user to Realtime Database:", error);
+      }
+    }
+  };
+
+  useEffect(() => {
+    const videoDisabledDiv = document.querySelector('.str_video__video-preview__disabled-video-preview');
+
+    if (videoDisabledDiv) {
+      videoDisabledDiv.textContent = 'Camera is off';
+    }
+  }, []); // Run on component mount
+
 
   useEffect(() => {
     if (selectedLanguage) {
@@ -77,9 +111,6 @@ const MeetingSetup = ({
       />
     );
 
-  const handleInputChange = (text: string) => {
-    setDisplayName(text);
-  };
 
   // Custom options for react-select
   const countryOptions = countries.map((country, index) => ({
@@ -110,7 +141,7 @@ const MeetingSetup = ({
       <div className="flex gap-x-5 items-center">
         <Button
           className="rounded-md bg-[#5BC2AC] px-4 py-2.5"
-          onClick={() => {
+          onClick={async () => {
             if (isUserLoggedIn && user.isAnonymous && !displayName)
               return alert('Please set a name before joining the meeting.');
 
@@ -119,6 +150,7 @@ const MeetingSetup = ({
               user.isAnonymous ? displayName : user.name,
             );
 
+            await saveUserToRealtimeDatabase();  // Save user info to Realtime Database
             call.join();
             setIsSetupComplete(true);
           }}
@@ -140,6 +172,7 @@ const MeetingSetup = ({
             className="text-black text-sm p-2 rounded-lg border"
             type="text"
             placeholder="Your Name"
+            value={localDisplayName}  // Set the value to the local display name
             onChange={(e) => handleInputChange(e.target.value)}
           />
         )}

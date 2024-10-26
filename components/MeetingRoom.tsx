@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 'use client';
 import {
   CallControls,
@@ -9,7 +10,8 @@ import {
 import { LayoutList } from 'lucide-react';
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import { useContext, useEffect, useState } from 'react';
-
+import { ref, get, } from 'firebase/database';
+import authContext from '@/auth/AuthContext';
 import Chat from './Chat';
 import EndCallButton from './EndCallButton';
 import Loader from './Loader';
@@ -21,7 +23,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from './ui/dropdown-menu';
-import authContext from '@/auth/AuthContext';
+import { database } from '@/lib/firebase';
 
 type CallLayoutType = 'grid' | 'speaker-left' | 'speaker-right';
 
@@ -33,9 +35,55 @@ const MeetingRoom = () => {
   const router = useRouter();
   const [layout, setLayout] = useState<CallLayoutType>('speaker-left');
   const { useCallCallingState } = useCallStateHooks();
-
   const { user, isUserLoggedIn } = useContext(authContext);
   const [userDisplayName, setUserDisplayName] = useState('');
+  const [participants, setParticipants] = useState<any[]>([]);
+
+
+  useEffect(() => {
+    const fetchParticipants = async (meetingId: string | string[]) => {
+      if (!meetingId) {
+        console.error("Meeting ID is required to fetch participants.");
+        return;
+      }
+
+      try {
+        const participantsRef = ref(database, `meetings/${meetingId}/participants`);
+        const snapshot = await get(participantsRef);
+
+        if (snapshot.exists()) {
+          const participantsData = snapshot.val();
+          const fetchedParticipants = Object.keys(participantsData).map((key) => ({
+            id: key,
+            ...participantsData[key],
+          }));
+          setParticipants(fetchedParticipants); // Update state with participants
+        } else {
+          console.log("No participants found.");
+          setParticipants([]); // Clear state if no participants
+        }
+      } catch (error) {
+        console.error("Error fetching participants:", error);
+        setParticipants([]); // Clear state on error
+      }
+    };
+
+    fetchParticipants(roomID);
+  }, [roomID]); // Add roomID to dependencies
+
+  useEffect(() => {
+    // Update participant names based on displayName
+    participants.forEach(participant => {
+      const participantNameDivs = document.querySelectorAll(`.str-video__participant-details__name`);
+
+      participantNameDivs.forEach(participantNameDiv => {
+        // Check if the text content matches userId, and if so, update it
+        if (participantNameDiv?.textContent?.trim() === participant.userId) {
+          participantNameDiv.childNodes[0].textContent = participant.displayName; // Update with displayName
+        }
+      });
+    });
+  });
 
   // console.log(user)
   // console.log(userDisplayName)
@@ -50,7 +98,11 @@ const MeetingRoom = () => {
         ? user.name
         : localStorage.getItem('display-name') || '',
     );
+
   }, [user, isUserLoggedIn]);
+
+
+
 
   // for more detail about types of CallingState see: https://getstream.io/video/docs/react/ui-cookbook/ringing-call/#incoming-call-panel
   const callingState = useCallCallingState();
@@ -69,10 +121,10 @@ const MeetingRoom = () => {
   };
 
   return (
-    <section className="relative h-screen w-full overflow-hidden pt-4 text-white">
+    <section className="relative h-screen w-full  pt-4 text-white overflow-hidden">
       <div className="relative flex size-full items-center justify-center">
-        <div className=" flex size-full max-w-[1000px] items-center">
-          <CallLayout />
+        <div className=" flex size-full max-w-7xl items-center  ">
+            <CallLayout />
         </div>
 
       </div>
@@ -105,10 +157,10 @@ const MeetingRoom = () => {
         <Modal />
         <Chat roomId={roomID as string} />
         {!isPersonalRoom && <EndCallButton />}
-        <div className='absolute bottom-20 left-[18%] bg-gray-500 text-black p-2 rounded-lg text-sm'>
-          {userDisplayName}
-        </div>
       </div>
+      {/* <div className='absolute bottom-20 left-[18%] bg-gray-500 text-black p-2 rounded-lg text-sm'>
+        {userDisplayName}
+      </div> */}
     </section>
   );
 };

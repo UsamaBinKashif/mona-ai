@@ -1,11 +1,14 @@
 import { ReactNode } from 'react';
 
 import StreamVideoProvider from '@/providers/StreamClientProvider';
+import { DisplayNameProvider } from '@/providers/DisplayNameContext';
 
 const RootLayout = ({ children }: Readonly<{ children: ReactNode }>) => {
   return (
     <main>
-      <StreamVideoProvider>{children}</StreamVideoProvider>
+      <DisplayNameProvider>
+        <StreamVideoProvider>{children}</StreamVideoProvider>
+      </DisplayNameProvider>
     </main>
   );
 };

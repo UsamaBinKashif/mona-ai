@@ -78,7 +78,7 @@ const MeetingTypeList = () => {
   if (!client || !user) return <Loader />;
 
   return (
-    <section className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-4">
+    <section className="grid grid-cols-5 gap-10  ">
       <HomeCard
         img="/icons/add-meeting.svg"
         title="New Meeting"
@@ -111,11 +111,14 @@ const MeetingTypeList = () => {
       <MeetingModal
         isOpen={meetingState === 'isInstantMeeting'}
         onClose={() => setMeetingState(undefined)}
-        title="Start an Instant Meeting"
+        title="New Meeting"
         className="text-center"
         buttonText="Start Meeting"
+        description="Start an instant meeting"
+        img="/icons/add-meeting.svg"
         handleClick={createMeeting}
       />
+
     </section>
   );
 };

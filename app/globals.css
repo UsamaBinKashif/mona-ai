@@ -11,8 +11,6 @@
   box-sizing: border-box;
 }
 
-
-
 /* ======== stream css overrides ======== */
 .str-video__call-stats {
   max-width: 500px;
@@ -116,7 +114,27 @@
   }
 }
 
-
+/* 
 .str-video__participant-details__name{
   display: none !important;
+} */
+
+.str-video__video-preview-container {
+  border: none !important;
+  width: 600px !important;
+}
+
+.str-video__call-controls__button,
+.str-video__menu-toggle-button {
+  background: transparent !important;
+}
+
+.str-video__speaker-layout__participants-bar {
+  display: grid !important;
+  grid-template-columns: repeat(2, 1fr); /* Creates a 4-column grid */
+  gap: 10px; /* Adjust the gap between items as needed */
+  overflow-y: auto; /* Enables horizontal scrolling */
+  overflow-x: hidden; /* Enables horizontal scrolling */
+  padding: 10px; /* Adds padding to the scrollable area */
+  scroll-snap-type: y mandatory; /* Optional: Smooth scroll snapping */
 }

@@ -15,6 +15,7 @@ import Loader from '@/components/Loader';
 // Actions
 import { tokenProvider } from '@/actions/stream.actions';
 import authContext from '@/auth/AuthContext';
+import { DisplayNameContext } from './DisplayNameContext';
 
 // API KEY
 const API_KEY = process.env.NEXT_PUBLIC_STREAM_API_KEY;
@@ -33,6 +34,8 @@ const StreamVideoProvider = ({ children }: { children: ReactNode }) => {
   const [videoClient, setVideoClient] = useState<StreamVideoClient>();
   const { id } = useParams();
   const { user, isUserLoggedIn, isLoading } = useContext(authContext);
+  const { displayName } = useContext(DisplayNameContext);  // Use the display name from context
+
   const [isLoadingSignInAnonymous, setIsLoadingSignInAnonymous] =
     useState(false);
 
@@ -74,7 +77,7 @@ const StreamVideoProvider = ({ children }: { children: ReactNode }) => {
       apiKey: API_KEY,
       user: {
         id: user.id,
-        name: user.name || user.id,
+        name: user.name || displayName,
         image: user.photo,
       },
       tokenProvider: tokenProviderRes,

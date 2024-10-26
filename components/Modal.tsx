@@ -61,9 +61,9 @@ export default function Modal({ roomId }: any) {
             </button>
             {showModal ? (
                 <>
-                    <div className="fixed inset-0 z-10   w-screen lg:w-[400px] h-full  2xl:h-[95%] bg-[#000D2D]  p-5 text-[14px]">
-                        <div className="relative ">
-                            <header className="">
+                    <div className="fixed inset-0 z-10 flex flex-col justify-between  w-screen lg:w-[400px] h-full   bg-[#000D2D]  p-5 text-[14px]">
+                        <div className="relative  overflow-y-auto scrollbar-hide ">
+                            <div>
                                 <svg width="250" height="68" viewBox="0 0 379 68" fill="none" xmlns="http://www.w3.org/2000/svg">
                                     <path d="M369.158 15.6855V56.5941H378.466V15.6855H369.158Z" fill="#2D9F89" />
                                     <path d="M127.741 14.9449L115.879 39.5031L112.216 48.2984H111.72L107.929 39.5031L95.9473 14.9449H86.8186V57.3505H93.5221V31.3387L93.2745 25.2026H93.7697L96.3318 31.3387L107.818 54.8394H115.892L127.378 31.3387L129.94 25.2026H130.435L130.187 31.3387V57.3505H136.87V14.9449H127.741Z" fill="white" />
@@ -79,9 +79,9 @@ export default function Modal({ roomId }: any) {
                                 </svg>
 
 
-                            </header>
-                            <div className="my-5 relative flex justify-center flex-col ">
-                                <div className="h-[600px] lg:h-[450px]  overflow-y-scroll scrollbar-hide">
+                            </div>
+                            <div className="my-5  relative flex justify-center flex-col ">
+                                <div className="  overflow-y-scroll scrollbar-hide">
                                     <div className="text-white">
                                         {responses.map((res, index) => (
                                             <div key={index} className="p-3 mb-4 flex gap-2 flex-col">
@@ -91,36 +91,36 @@ export default function Modal({ roomId }: any) {
                                         ))}
                                     </div>
                                 </div>
-                                <div className="flex items-center mt-5 gap-2 w-full  " >
-                                    <Input
-                                        type="text"
-                                        name="text"
-                                        className="text-[#9D9FA5] border flex-1     border-secondary-upperground bg-transparent  outline-none"
-                                        value={question}
-                                        onChange={(e) => setQuestion(e.target.value)}
-                                        placeholder="Enter your message"
-                                    />
-                                    <button
-                                        title="send-text"
-                                        onClick={askQuestion}
-                                        disabled={loading}
-                                        className={`bg-secondary-upperground hover:bg-secondary-upperground/50 w-[60px] flex items-center justify-center h-[40px] rounded-lg ${loading && "animate-pulse"}`}
-
-                                    >
-                                        <SendHorizontal color="white" />
-                                    </button>
-
-                                    <button
-                                        className="bg-red-500 hover:bg-red-500/50 w-[60px] flex items-center justify-center h-[40px] rounded-lg"
-
-                                        type="button"
-                                        onClick={() => setShowModal(false)}
-                                    >
-                                        <MessageCircleX color="white" />
-                                    </button>
-                                </div>
                             </div>
                         </div>
+                            <div className=" flex items-center  gap-2 w-full  " >
+                                <Input
+                                    type="text"
+                                    name="text"
+                                    className="text-[#9D9FA5] border flex-1     border-secondary-upperground bg-transparent  outline-none"
+                                    value={question}
+                                    onChange={(e) => setQuestion(e.target.value)}
+                                    placeholder="Enter your message"
+                                />
+                                <button
+                                    title="send-text"
+                                    onClick={askQuestion}
+                                    disabled={loading}
+                                    className={`bg-secondary-upperground hover:bg-secondary-upperground/50 w-[60px] flex items-center justify-center h-[40px] rounded-lg ${loading && "animate-pulse"}`}
+
+                                >
+                                    <SendHorizontal color="white" />
+                                </button>
+
+                                <button
+                                    className="bg-red-500 hover:bg-red-500/50 w-[60px] flex items-center justify-center h-[40px] rounded-lg"
+
+                                    type="button"
+                                    onClick={() => setShowModal(false)}
+                                >
+                                    <MessageCircleX color="white" />
+                                </button>
+                            </div>
                     </div>
                 </>
             ) : null}
