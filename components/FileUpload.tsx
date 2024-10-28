@@ -87,7 +87,7 @@ const FileUpload = ({ sender }: any) => {
                         title="upload-file"
                         onClick={() => setIsDialogOpen(true)}
                     >
-                        <Upload width={15} />
+                        <Upload width={18} />
                     </div>
                 </DialogTrigger>
                 <DialogContent className="sm:max-w-[425px]">

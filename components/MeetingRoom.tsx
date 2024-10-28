@@ -24,6 +24,7 @@ import {
   DropdownMenuTrigger,
 } from './ui/dropdown-menu';
 import { database } from '@/lib/firebase';
+import { toast } from './ui/use-toast';
 
 type CallLayoutType = 'grid' | 'speaker-left' | 'speaker-right';
 
@@ -102,8 +103,6 @@ const MeetingRoom = () => {
   }, [user, isUserLoggedIn]);
 
 
-
-
   // for more detail about types of CallingState see: https://getstream.io/video/docs/react/ui-cookbook/ringing-call/#incoming-call-panel
   const callingState = useCallCallingState();
 
@@ -123,8 +122,8 @@ const MeetingRoom = () => {
   return (
     <section className="relative h-screen w-full  pt-4 text-white overflow-hidden">
       <div className="relative flex size-full items-center justify-center">
-        <div className=" flex size-full max-w-7xl items-center  ">
-            <CallLayout />
+        <div className=" flex size-full max-w-5xl items-center  ">
+          <CallLayout />
         </div>
 
       </div>

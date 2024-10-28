@@ -38,7 +38,7 @@ const MeetingModal = ({
 }: MeetingModalProps) => {
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className=" flex w-full max-w-[520px] flex-col gap-6 border-none bg-dark-1 px-6 py-9 text-white">
+      <DialogContent className={`flex w-full max-w-[520px] flex-col gap-6 border-none px-6 py-9 text-white ${title === "New Meeting" ? "bg-[#5BC2AC]" : "bg-dark-1"}`}>
         {title === "New Meeting" ? (
           <section
             className={cn(
@@ -89,7 +89,7 @@ const MeetingModal = ({
           </div>
         )}
       </DialogContent>
-    </Dialog>
+    </Dialog >
   );
 };
 

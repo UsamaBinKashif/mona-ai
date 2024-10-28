@@ -390,7 +390,7 @@ const Chat = ({ roomId, setChatBox }: Props) => {
             </div>
           </div>
           <div className="flex gap-2 absolute bottom-0 lg:bottom-4 items-center">
-            <div className="flex border-2 border-secondary-upperground items-center bg-transparent rounded-xl">
+            <div className="flex border-1 border-secondary-upperground items-center bg-transparent rounded-xl">
               <Input
                 type="text"
                 name="text"
@@ -409,9 +409,9 @@ const Chat = ({ roomId, setChatBox }: Props) => {
                   : 'bg-transparent p-2 cursor-pointer rounded-lg hover:bg-green-400'
               }
             >
-              <Mic width={15} />
+              <Mic width={18} />
             </div>
-            <FileUpload sender={userDisplayName} />
+            <FileUpload sender={userDisplayName} width={18} />
             <button
               title="send-text"
               onClick={sendMessage}

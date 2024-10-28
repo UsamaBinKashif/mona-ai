@@ -69,7 +69,7 @@ const MeetingSetup = ({
     if (videoDisabledDiv) {
       videoDisabledDiv.textContent = 'Camera is off';
     }
-  }, []); // Run on component mount
+  }); // Run on component mount
 
 
   useEffect(() => {
