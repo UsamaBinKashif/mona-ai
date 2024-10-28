@@ -78,7 +78,7 @@ const MeetingTypeList = () => {
   if (!client || !user) return <Loader />;
 
   return (
-    <section className="grid grid-cols-5 gap-10  ">
+    <section className="grid lg:grid-cols-5 gap-10  ">
       <HomeCard
         img="/icons/add-meeting.svg"
         title="New Meeting"

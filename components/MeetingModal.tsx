@@ -38,22 +38,22 @@ const MeetingModal = ({
 }: MeetingModalProps) => {
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className={`flex w-full max-w-[520px] flex-col gap-6 border-none px-6 py-9 text-white ${title === "New Meeting" ? "bg-[#5BC2AC]" : "bg-dark-1"}`}>
+      <DialogContent className={`flex w-[350px]  rounded-lg  lg:w-[520px] flex-col gap-6 border-none px-6 py-9 text-white ${title === "New Meeting" ? "bg-[#5BC2AC]" : "bg-dark-1"}`}>
         {title === "New Meeting" ? (
           <section
             className={cn(
-              "bg-[#5BC2AC] mx-auto  px-4 py-6 flex flex-col justify-between w-full xl:max-w-[270px] min-h-[260px] rounded-[14px] cursor-pointer",
+              "bg-[#5BC2AC] mx-auto pishtu  px-4 py-6 flex flex-col justify-between w-full xl:max-w-[270px] min-h-[260px] rounded-[14px] cursor-pointer",
               className
             )}
             onClick={handleClick}
           >
-            {img && (
-              <div className="flex-center glassmorphism size-12 rounded-[10px]">
-                <Image src={img} alt="meeting" width={27} height={27} />
-              </div>
-            )}
 
-            <div className="flex flex-col gap-2">
+            <div className="flex flex-col items-center gap-2">
+              {img && (
+                <div className="flex-center glassmorphism size-12 rounded-[10px]">
+                  <Image src={img} alt="meeting" width={27} height={27} />
+                </div>
+              )}
               <h1 className="text-2xl font-bold">{title}</h1>
               <p className="text-lg font-normal">{description}</p>
             </div>
@@ -71,7 +71,7 @@ const MeetingModal = ({
             {children}
             <Button
               className={
-                "bg-[#5BC2AC] focus-visible:ring-0 focus-visible:ring-offset-0"
+                "bg-[#5BC2AC] focus-visible:ring-0 focus-visible:ring-offset-0 border-0 outline-none"
               }
               onClick={handleClick}
             >

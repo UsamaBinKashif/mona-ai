@@ -70,7 +70,7 @@ const MeetingRoom = () => {
     };
 
     fetchParticipants(roomID);
-  }, [roomID]); // Add roomID to dependencies
+  }); // Add roomID to dependencies
 
   useEffect(() => {
     // Update participant names based on displayName

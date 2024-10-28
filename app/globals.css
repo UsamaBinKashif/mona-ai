@@ -138,3 +138,18 @@
   padding: 10px; /* Adds padding to the scrollable area */
   scroll-snap-type: y mandatory; /* Optional: Smooth scroll snapping */
 }
+
+div[role="dialog"] > button {
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important; /* Removes any default focus ring */
+  background: none;
+}
+
+div[role="dialog"] > button:hover,
+div[role="dialog"] > button:focus,
+div[role="dialog"] > button:active {
+  outline: none !important;
+  border: none !important;
+  box-shadow: none !important;
+}
