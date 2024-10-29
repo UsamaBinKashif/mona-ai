@@ -124,6 +124,12 @@
   width: 600px !important;
 }
 
+@media (max-width: 767px) {
+  .str-video__video-preview-container {
+    width: 350px !important;
+  }
+}
+
 .str-video__call-controls__button,
 .str-video__menu-toggle-button {
   background: transparent !important;

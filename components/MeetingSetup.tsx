@@ -124,7 +124,7 @@ const MeetingSetup = ({
   }));
 
   return (
-    <div className="flex h-screen w-[350px] lg:w-full flex-col items-center justify-center gap-3 text-white">
+    <div className="flex h-screen w-full flex-col items-center justify-center gap-3 text-white">
       <VideoPreview />
       <div className="flex h-16 items-center justify-center gap-3">
         <label className="flex items-center justify-center gap-2 font-medium">
@@ -137,7 +137,7 @@ const MeetingSetup = ({
         </label>
         <DeviceSettings />
       </div>
-      <div className="flex flex-col lg:flex-row gap-x-5 items-center">
+      <div className="flex flex-col lg:flex-row gap-5 items-center">
         <Button
           className="rounded-md bg-[#5BC2AC] px-4 py-2.5"
           onClick={async () => {
