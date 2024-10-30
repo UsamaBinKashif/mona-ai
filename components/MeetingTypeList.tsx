@@ -97,7 +97,7 @@ const MeetingTypeList = () => {
         isOpen={meetingState === 'isJoiningMeeting'}
         onClose={() => setMeetingState(undefined)}
         title="Type the link here"
-        className="text-center"
+        className="text-center justify-between"
         buttonText="Join Meeting"
         handleClick={() => router.push(`/meeting/${values.link}`)}
       >
@@ -112,7 +112,7 @@ const MeetingTypeList = () => {
         isOpen={meetingState === 'isInstantMeeting'}
         onClose={() => setMeetingState(undefined)}
         title="New Meeting"
-        className="text-center"
+        className="text-center justify-center"
         buttonText="Start Meeting"
         description="Start an instant meeting"
         img="/icons/add-meeting.svg"

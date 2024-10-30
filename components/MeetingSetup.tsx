@@ -122,6 +122,7 @@ const MeetingSetup = ({
       </div>
     ),
   }));
+  const mongolianOption = countryOptions.find(option => option.value === 'Mongolian');
 
   return (
     <div className="flex h-screen w-full flex-col items-center justify-center gap-3 text-white">
@@ -163,6 +164,7 @@ const MeetingSetup = ({
             options={countryOptions}
             onChange={(option: SingleValue<{ value: string }>) => setSelectedLanguage(option?.value || '')}
             className="text-black"
+            defaultValue={mongolianOption} // Set Mongolian as the default
           />
         </div>
 

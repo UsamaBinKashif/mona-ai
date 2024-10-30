@@ -128,7 +128,7 @@ const MeetingRoom = () => {
 
       </div>
       {/* video layout and call controls */}
-      <div className="fixed bottom-0 flex w-full items-center justify-center gap-5">
+      <div className="fixed bottom-0 flex w-full items-center md:justify-center  flex-col  md:flex-row md:gap-5 md:px-6">
         <CallControls onLeave={() => router.push(`/`)} />
 
         <DropdownMenu>
@@ -153,9 +153,12 @@ const MeetingRoom = () => {
           </DropdownMenuContent>
         </DropdownMenu>
 
-        <Modal />
-        <Chat roomId={roomID as string} />
+        <div className='flex gap-x-2'>
+
+          <Modal />
+          <Chat roomId={roomID as string} />
         {!isPersonalRoom && <EndCallButton />}
+        </div>
       </div>
       {/* <div className='absolute bottom-20 left-[18%] bg-gray-500 text-black p-2 rounded-lg text-sm'>
         {userDisplayName}

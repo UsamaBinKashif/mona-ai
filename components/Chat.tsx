@@ -411,7 +411,7 @@ const Chat = ({ roomId, setChatBox }: Props) => {
             >
               <Mic width={18} />
             </div>
-            <FileUpload sender={userDisplayName} width={18} />
+            <FileUpload sender={userDisplayName}  />
             <button
               title="send-text"
               onClick={sendMessage}

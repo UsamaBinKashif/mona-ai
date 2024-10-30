@@ -42,13 +42,13 @@ const MeetingModal = ({
         {title === "New Meeting" ? (
           <section
             className={cn(
-              "bg-[#5BC2AC] mx-auto pishtu  px-4 py-6 flex flex-col justify-between w-full xl:max-w-[270px] min-h-[260px] rounded-[14px] cursor-pointer",
+              "bg-[#5BC2AC] mx-auto pishtu  px-4 py-6 flex flex-col  w-full xl:max-w-[270px] min-h-[260px] rounded-[14px] cursor-pointer",
               className
             )}
             onClick={handleClick}
           >
 
-            <div className="flex flex-col items-center gap-2">
+            <div className="flex flex-col   items-center gap-2">
               {img && (
                 <div className="flex-center glassmorphism size-12 rounded-[10px]">
                   <Image src={img} alt="meeting" width={27} height={27} />
