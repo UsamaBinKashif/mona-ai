@@ -309,7 +309,7 @@ const Chat = ({ roomId, setChatBox }: Props) => {
         <MessageSquareText className="size-6 cursor-pointer" />
       </button>
       {showModal ? (
-        <div className="fixed right-0 top-0 text-white p-2 lg:p-5 bg-[#1A2131] lg:w-[354px] h-screen overflow-hidden">
+        <div className="fixed right-0 top-0 text-white p-2 lg:p-5 bg-[#1A2131] w-[354px] h-screen overflow-hidden">
           <div className="flex justify-between items-center">
             <img
               src="/images/monaai.png"
